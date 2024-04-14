@@ -1,7 +1,10 @@
+//Grupo conformado por: Angie Ramírez y Walter Zárate
+
 #ifndef MOVING_IMG_H
 #define MOVING_IMG_H
 #include <iostream>
 #include "basics.h"
+#include <cstdio>
 #include <stack>
 #include <queue>
 #include <utility>
@@ -19,7 +22,7 @@ private:
 
   stack<pair<string,int>> historial;
   stack<pair<string,int>> h_undo;
-  queue<pair<string,int>> q_historial;
+  queue<pair<string,int>> h_queue;
 
 public:
   // Constructor de la imagen. Se crea una imagen por defecto. Estamos creando la matriz de 1000x1000
@@ -74,7 +77,6 @@ public:
   // Función utilizada para guardar la imagen en formato .png
   void draw(const char* nb) {
     _draw(nb);
-    historial.push(make_pair("draw",0));
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_RIGHT(D)
@@ -124,6 +126,7 @@ public:
         blue_layer[i][j] = tmp_layer[i][j];
 
     historial.push(make_pair("move_right",d));
+    h_queue.push(make_pair("move_right",d));
   }
 
   // Función que similar desplazar la imagen, de manera circular, d pixeles a la izquierda
@@ -171,6 +174,7 @@ public:
 	       blue_layer[i][j] = tmp_layer[i][j];
 
     historial.push(make_pair("move_left",d));
+    h_queue.push(make_pair("move_left",d));
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_UP(D)
@@ -220,6 +224,7 @@ public:
        blue_layer[i][j] = tmp_layer[i][j];
 
     historial.push(make_pair("move_up",d));
+    h_queue.push(make_pair("move_up",d));
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_DOWN(D)
@@ -269,6 +274,7 @@ public:
        blue_layer[i][j] = tmp_layer[i][j];
 
     historial.push(make_pair("move_down",d));
+    h_queue.push(make_pair("move_down",d));
   }
 
   void rotate(){
@@ -313,6 +319,7 @@ public:
     }
 
     historial.push(make_pair("rotate",0));
+    h_queue.push(make_pair("rotate",0));
   }
 
   void derotate(){
@@ -355,6 +362,7 @@ public:
     }
 
     historial.push(make_pair("derotate",0));
+    h_queue.push(make_pair("derotate",0));
   }  
 
   void undo(){
@@ -429,6 +437,68 @@ public:
     else{
       cout << "Hubo un problema con la comprobación de nombres" << endl;
     }
+  }
+
+  void repeat_all(){
+    if(h_queue.size()!=0){
+      char filename[100];
+      int size = h_queue.size();
+      original_status();
+      draw("imagen 0.png");
+
+      for(int i=0 ; i<size ; i++){
+
+        if(h_queue.front().first.compare("move_right") == 0){
+          move_right(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_left") == 0){
+          move_left(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_up") == 0){
+          move_up(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_down") == 0){
+          move_down(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("rotate") == 0){
+          rotate();
+        }
+        else if(h_queue.front().first.compare("derotate") == 0){
+          derotate();
+        }
+        else{
+          cout << "Hubo un problema con la comprobación de nombres" << endl;
+        }
+
+        h_queue.pop();
+        sprintf(filename, "Imagen %d.png", i+1);
+        draw(filename);
+      }
+    }
+  }
+
+  void original_status(){
+    for(int i=0; i < H_IMG; i++)
+    for(int j=0; j < W_IMG; j++) {
+      red_layer[i][j] = DEFAULT_R;
+      green_layer[i][j] = DEFAULT_G;
+      blue_layer[i][j] = DEFAULT_B;
+    }
+
+  // Dibujamos el objeto en su posición inicial
+  for(int i=0; i < 322; i++)
+    for(int j=0; j < 256; j++) {
+      if(!s_R[i][j] && !s_G[i][j] && !s_B[i][j]) {
+        red_layer[INIT_Y+i][INIT_X+j] = DEFAULT_R;
+        green_layer[INIT_Y+i][INIT_X+j] = DEFAULT_G;
+        blue_layer[INIT_Y+i][INIT_X+j] = DEFAULT_B;
+      } else {
+        red_layer[INIT_Y+i][INIT_X+j] = s_R[i][j];
+        green_layer[INIT_Y+i][INIT_X+j] = s_G[i][j];
+        blue_layer[INIT_Y+i][INIT_X+j] = s_B[i][j];
+      }
+    }  
+
   }
 
 

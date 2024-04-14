@@ -16,7 +16,7 @@ int main() {
     im.rotate();
     Sleep(1000);
     im.draw("imagen.png");
-    im.move_left(300);
+    im.rotate();
     Sleep(1000);
     im.draw("imagen.png");
     im.rotate();
@@ -25,7 +25,10 @@ int main() {
     im.undo();
     Sleep(1000);
     im.draw("imagen.png");
-    im.redo();
+    im.move_right(500);
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.repeat_all();
     Sleep(1000);
     im.draw("imagen.png");
 
