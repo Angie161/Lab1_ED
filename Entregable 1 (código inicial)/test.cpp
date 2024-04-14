@@ -19,7 +19,7 @@ int main() {
     im.rotate();
     Sleep(1000);
     im.draw("imagen.png");
-    im.derotate();
+    im.undo();
     Sleep(1000);
     im.draw("imagen.png");
     im.derotate();

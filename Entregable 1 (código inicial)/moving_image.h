@@ -2,6 +2,9 @@
 #define MOVING_IMG_H
 #include <iostream>
 #include "basics.h"
+#include <stack>
+#include <utility>
+
 using namespace std;
 
 // Clase que representa una imagen como una colección de 3 matrices siguiendo el
@@ -12,6 +15,8 @@ private:
   unsigned char **red_layer; // Capa de tonalidades rojas, es un doble puntero pues es una matriz de nxm
   unsigned char **green_layer; // Capa de tonalidades verdes
   unsigned char **blue_layer; // Capa de tonalidades azules
+
+  stack<pair<string,int>> historial;
 
 public:
   // Constructor de la imagen. Se crea una imagen por defecto. Estamos creando la matriz de 1000x1000
@@ -113,6 +118,8 @@ public:
     for(int i=0; i < H_IMG; i++)
       for(int j=0; j < W_IMG; j++)
         blue_layer[i][j] = tmp_layer[i][j];
+
+    historial.push(make_pair("move_right",d));
   }
 
   // Función que similar desplazar la imagen, de manera circular, d pixeles a la izquierda
@@ -158,6 +165,8 @@ public:
     for(int i=0; i < H_IMG; i++)
       for(int j=0; j < W_IMG; j++)
 	       blue_layer[i][j] = tmp_layer[i][j];
+
+    historial.push(make_pair("move_left",d));
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_UP(D)
@@ -205,6 +214,8 @@ public:
     for(int i=0; i < H_IMG; i++)
       for(int j=0; j < W_IMG; j++)
        blue_layer[i][j] = tmp_layer[i][j];
+
+    historial.push(make_pair("move_up",d));
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_DOWN(D)
@@ -252,6 +263,8 @@ public:
     for(int i=0; i < H_IMG; i++)
       for(int j=0; j < W_IMG; j++)
        blue_layer[i][j] = tmp_layer[i][j];
+
+    historial.push(make_pair("move_down",d));
   }
 
   void rotate(){
@@ -294,6 +307,8 @@ public:
         blue_layer[i][j] = tmp_layer[i][j];
       }
     }
+
+    historial.push(make_pair("rotate",0));
   }
 
   void derotate(){
@@ -334,7 +349,33 @@ public:
         blue_layer[i][j] = tmp_layer[i][j];
       }
     }
+
+    historial.push(make_pair("derotate",0));
   }  
+
+  void undo(){
+    if(historial.top().first.compare("move_right") == 0){
+      move_left(historial.top().second);
+    }
+    else if(historial.top().first.compare("move_left") == 0){
+      move_right(historial.top().second);
+    }
+    else if(historial.top().first.compare("move_up") == 0){
+      move_down(historial.top().second);
+    }
+    else if(historial.top().first.compare("move_down") == 0){
+      move_up(historial.top().second);
+    }
+    else if(historial.top().first.compare("rotate") == 0){
+      derotate();
+    }
+    else if(historial.top().first.compare("derotate") == 0){
+      rotate();
+    }
+    else{
+      cout << "Hubo un problema con la comprobación de nombres" << endl;
+    }
+  }
 
 
 private:
