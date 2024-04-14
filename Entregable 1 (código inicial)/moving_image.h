@@ -3,6 +3,7 @@
 #include <iostream>
 #include "basics.h"
 #include <stack>
+#include <queue>
 #include <utility>
 
 using namespace std;
@@ -17,6 +18,8 @@ private:
   unsigned char **blue_layer; // Capa de tonalidades azules
 
   stack<pair<string,int>> historial;
+  stack<pair<string,int>> h_undo;
+  queue<pair<string,int>> q_historial;
 
 public:
   // Constructor de la imagen. Se crea una imagen por defecto. Estamos creando la matriz de 1000x1000
@@ -71,6 +74,7 @@ public:
   // Función utilizada para guardar la imagen en formato .png
   void draw(const char* nb) {
     _draw(nb);
+    historial.push(make_pair("draw",0));
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_RIGHT(D)
@@ -371,6 +375,32 @@ public:
     }
     else if(historial.top().first.compare("derotate") == 0){
       rotate();
+    }
+    else{
+      cout << "Hubo un problema con la comprobación de nombres" << endl;
+    }
+
+    h_undo.push(make_pair(historial.top().first, historial.top().second));
+  }
+
+  void redo(){
+    if(h_undo.top().first.compare("move_right") == 0){
+      move_right(h_undo.top().second);
+    }
+    else if(h_undo.top().first.compare("move_left") == 0){
+      move_left(h_undo.top().second);
+    }
+    else if(h_undo.top().first.compare("move_up") == 0){
+      move_up(h_undo.top().second);
+    }
+    else if(h_undo.top().first.compare("move_down") == 0){
+      move_down(h_undo.top().second);
+    }
+    else if(h_undo.top().first.compare("rotate") == 0){
+      rotate();
+    }
+    else if(h_undo.top().first.compare("derotate") == 0){
+      derotate();
     }
     else{
       cout << "Hubo un problema con la comprobación de nombres" << endl;
