@@ -294,9 +294,48 @@ public:
         blue_layer[i][j] = tmp_layer[i][j];
       }
     }
-
-
   }
+
+  void derotate(){
+    unsigned char tmp_layer[H_IMG][W_IMG];
+    //Rotar capa roja
+    for(int i=H_IMG-1, aux_j=0; i>=0 ; i--, aux_j++){
+      for(int j=0, aux_i= 0; j<W_IMG; j++, aux_i++){
+        tmp_layer[aux_i][aux_j]=red_layer[i][j];
+      }
+    }
+
+    for(int i=0; i < H_IMG; i++){
+      for(int j=0; j < W_IMG; j++){
+        red_layer[i][j] = tmp_layer[i][j];
+      }
+    }
+
+      for(int i=H_IMG-1, aux_j=0; i>=0 ; i--, aux_j++){
+      for(int j=0, aux_i= 0; j<W_IMG; j++, aux_i++){
+        tmp_layer[aux_i][aux_j]=green_layer[i][j];
+      }
+    }
+
+    for(int i=0; i < H_IMG; i++){
+      for(int j=0; j < W_IMG; j++){
+        green_layer[i][j] = tmp_layer[i][j];
+      }
+    }
+
+      for(int i=H_IMG-1, aux_j=0; i>=0 ; i--, aux_j++){
+      for(int j=0, aux_i= 0; j<W_IMG; j++, aux_i++){
+        tmp_layer[aux_i][aux_j]=blue_layer[i][j];
+      }
+    }
+
+    for(int i=0; i < H_IMG; i++){
+      for(int j=0; j < W_IMG; j++){
+        blue_layer[i][j] = tmp_layer[i][j];
+      }
+    }
+  }  
+
 
 private:
   // Función privada que guarda la imagen en formato .png
