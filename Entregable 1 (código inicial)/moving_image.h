@@ -377,6 +377,30 @@ public:
     }
   }
 
+  void redo(){
+    if(historial.top().first.compare("move_right") == 0){
+      move_right(historial.top().second);
+    }
+    else if(historial.top().first.compare("move_left") == 0){
+      move_left(historial.top().second);
+    }
+    else if(historial.top().first.compare("move_up") == 0){
+      move_up(historial.top().second);
+    }
+    else if(historial.top().first.compare("move_down") == 0){
+      move_down(historial.top().second);
+    }
+    else if(historial.top().first.compare("rotate") == 0){
+      rotate();
+    }
+    else if(historial.top().first.compare("derotate") == 0){
+      derotate();
+    }
+    else{
+      cout << "Hubo un problema con la comprobación de nombres" << endl;
+    }
+  }
+
 
 private:
   // Función privada que guarda la imagen en formato .png

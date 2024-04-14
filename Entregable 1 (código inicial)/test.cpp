@@ -19,10 +19,19 @@ int main() {
     im.rotate();
     Sleep(1000);
     im.draw("imagen.png");
+    im.rotate();
+    Sleep(1000);
+    im.draw("imagen.png");
     im.undo();
     Sleep(1000);
     im.draw("imagen.png");
-    im.derotate();
+    im.move_right(500);
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.redo();
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.redo();
     Sleep(1000);
     im.draw("imagen.png");
 
