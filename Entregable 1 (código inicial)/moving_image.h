@@ -377,7 +377,7 @@ public:
     }
   }
 
-  void redo(){
+  void repeat(){
     if(historial.top().first.compare("move_right") == 0){
       move_right(historial.top().second);
     }

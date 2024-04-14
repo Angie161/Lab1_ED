@@ -25,15 +25,6 @@ int main() {
     im.undo();
     Sleep(1000);
     im.draw("imagen.png");
-    im.move_right(500);
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.redo();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.redo();
-    Sleep(1000);
-    im.draw("imagen.png");
 
   /* NOTA 1: Si usan el mismo nombre para las imágenes, entonces cada llamada al
   método draw() sobreescribirá a la imagen */
