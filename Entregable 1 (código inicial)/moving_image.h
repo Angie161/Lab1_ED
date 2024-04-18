@@ -127,6 +127,7 @@ public:
 
     historial.push(make_pair("move_right",d));
     h_queue.push(make_pair("move_right",d));
+    stack<pair<string,int>>().swap(h_undo);
   }
 
   // Función que similar desplazar la imagen, de manera circular, d pixeles a la izquierda
@@ -175,6 +176,7 @@ public:
 
     historial.push(make_pair("move_left",d));
     h_queue.push(make_pair("move_left",d));
+    stack<pair<string,int>>().swap(h_undo);
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_UP(D)
@@ -225,6 +227,7 @@ public:
 
     historial.push(make_pair("move_up",d));
     h_queue.push(make_pair("move_up",d));
+    stack<pair<string,int>>().swap(h_undo);
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_DOWN(D)
@@ -275,6 +278,7 @@ public:
 
     historial.push(make_pair("move_down",d));
     h_queue.push(make_pair("move_down",d));
+    stack<pair<string,int>>().swap(h_undo);
   }
 
   void rotate(){
@@ -320,6 +324,7 @@ public:
 
     historial.push(make_pair("rotate",0));
     h_queue.push(make_pair("rotate",0));
+    stack<pair<string,int>>().swap(h_undo);
   }
 
   void derotate(){
@@ -363,117 +368,125 @@ public:
 
     historial.push(make_pair("derotate",0));
     h_queue.push(make_pair("derotate",0));
+    stack<pair<string,int>>().swap(h_undo);
   }  
 
   void undo(){
-    if(historial.top().first.compare("move_right") == 0){
-      move_left(historial.top().second);
-    }
-    else if(historial.top().first.compare("move_left") == 0){
-      move_right(historial.top().second);
-    }
-    else if(historial.top().first.compare("move_up") == 0){
-      move_down(historial.top().second);
-    }
-    else if(historial.top().first.compare("move_down") == 0){
-      move_up(historial.top().second);
-    }
-    else if(historial.top().first.compare("rotate") == 0){
-      derotate();
-    }
-    else if(historial.top().first.compare("derotate") == 0){
-      rotate();
-    }
-    else{
-      cout << "Hubo un problema con la comprobación de nombres" << endl;
-    }
+    try {
+      if(historial.top().first.compare("move_right") == 0){
+        move_left(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_left") == 0){
+        move_right(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_up") == 0){
+        move_down(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_down") == 0){
+        move_up(historial.top().second);
+      }
+      else if(historial.top().first.compare("rotate") == 0){
+        derotate();
+      }
+      else if(historial.top().first.compare("derotate") == 0){
+        rotate();
+      }
 
-    h_undo.push(make_pair(historial.top().first, historial.top().second));
+      h_undo.push(make_pair(historial.top().first, historial.top().second));
+      historial.pop();
+    }catch(...) {
+      cout << "Intentaste usar undo(), pero ya estas en lo mas atras." << endl;
+    }
   }
 
   void redo(){
-    if(h_undo.top().first.compare("move_right") == 0){
-      move_right(h_undo.top().second);
+    try {
+      if(h_undo.top().first.compare("move_right") == 0){
+        move_right(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("move_left") == 0){
+        move_left(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("move_up") == 0){
+        move_up(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("move_down") == 0){
+        move_down(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("rotate") == 0){
+        rotate();
+      }
+      else if(h_undo.top().first.compare("derotate") == 0){
+        derotate();
+      }
+      h_undo.pop(); 
     }
-    else if(h_undo.top().first.compare("move_left") == 0){
-      move_left(h_undo.top().second);
-    }
-    else if(h_undo.top().first.compare("move_up") == 0){
-      move_up(h_undo.top().second);
-    }
-    else if(h_undo.top().first.compare("move_down") == 0){
-      move_down(h_undo.top().second);
-    }
-    else if(h_undo.top().first.compare("rotate") == 0){
-      rotate();
-    }
-    else if(h_undo.top().first.compare("derotate") == 0){
-      derotate();
-    }
-    else{
-      cout << "Hubo un problema con la comprobación de nombres" << endl;
+    catch(...) {
+      cout << "Intentaste hacer redo(), pero ya estas en lo mas adelante." << endl;
     }
   }
 
   void repeat(){
-    if(historial.top().first.compare("move_right") == 0){
-      move_right(historial.top().second);
+    try{
+      if(historial.top().first.compare("move_right") == 0){
+        move_right(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_left") == 0){
+        move_left(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_up") == 0){
+        move_up(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_down") == 0){
+        move_down(historial.top().second);
+      }
+      else if(historial.top().first.compare("rotate") == 0){
+        rotate();
+      }
+      else if(historial.top().first.compare("derotate") == 0){
+        derotate();
+      }
+    } catch(...) {
+      cout << "Intentaste usar repeat(), pero no hay nada que repetir." << endl;
     }
-    else if(historial.top().first.compare("move_left") == 0){
-      move_left(historial.top().second);
-    }
-    else if(historial.top().first.compare("move_up") == 0){
-      move_up(historial.top().second);
-    }
-    else if(historial.top().first.compare("move_down") == 0){
-      move_down(historial.top().second);
-    }
-    else if(historial.top().first.compare("rotate") == 0){
-      rotate();
-    }
-    else if(historial.top().first.compare("derotate") == 0){
-      derotate();
-    }
-    else{
-      cout << "Hubo un problema con la comprobación de nombres" << endl;
-    }
+    
   }
 
   void repeat_all(){
-    if(h_queue.size()!=0){
-      char filename[100];
-      int size = h_queue.size();
-      original_status();
-      draw("imagen 0.png");
+    try {
+      if(h_queue.size()!=0){
+        char filename[100];
+        int size = h_queue.size();
+        original_status();
+        draw("imagen 0.png");
 
-      for(int i=0 ; i<size ; i++){
+        for(int i=0 ; i<size ; i++){
 
-        if(h_queue.front().first.compare("move_right") == 0){
-          move_right(h_queue.front().second);
+          if(h_queue.front().first.compare("move_right") == 0){
+            move_right(h_queue.front().second);
+          }
+          else if(h_queue.front().first.compare("move_left") == 0){
+            move_left(h_queue.front().second);
+          }
+          else if(h_queue.front().first.compare("move_up") == 0){
+            move_up(h_queue.front().second);
+          }
+          else if(h_queue.front().first.compare("move_down") == 0){
+            move_down(h_queue.front().second);
+          }
+          else if(h_queue.front().first.compare("rotate") == 0){
+            rotate();
+          }
+          else if(h_queue.front().first.compare("derotate") == 0){
+            derotate();
+          }
+          h_queue.pop();
+          sprintf(filename, "Imagen %d.png", i+1);
+          draw(filename);
         }
-        else if(h_queue.front().first.compare("move_left") == 0){
-          move_left(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("move_up") == 0){
-          move_up(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("move_down") == 0){
-          move_down(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("rotate") == 0){
-          rotate();
-        }
-        else if(h_queue.front().first.compare("derotate") == 0){
-          derotate();
-        }
-        else{
-          cout << "Hubo un problema con la comprobación de nombres" << endl;
-        }
-
-        h_queue.pop();
-        sprintf(filename, "Imagen %d.png", i+1);
-        draw(filename);
       }
+    } catch(...) {
+      cout << "Intentaste usar repeat_all(), pero no hay nada que repetir." << endl;
     }
   }
 
