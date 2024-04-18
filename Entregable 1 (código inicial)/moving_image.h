@@ -176,7 +176,7 @@ public:
 
     historial.push(make_pair("move_left",d));
     h_queue.push(make_pair("move_left",d));
-    stack<pair<string,int>>().swap(h_undo);
+    vaciarStackUndo();
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_UP(D)
@@ -368,7 +368,7 @@ public:
 
     historial.push(make_pair("derotate",0));
     h_queue.push(make_pair("derotate",0));
-    stack<pair<string,int>>().swap(h_undo);
+    vaciarStackUndo();
   }  
 
   void undo(){
@@ -391,8 +391,11 @@ public:
       else if(historial.top().first.compare("derotate") == 0){
         rotate();
       }
-
       h_undo.push(make_pair(historial.top().first, historial.top().second));
+
+      //Sacamos el undo realizado  a b
+      historial.pop();
+      //Sacamos el mov orginal para poder seguir haciendo undos
       historial.pop();
     }catch(...) {
       cout << "Intentaste usar undo(), pero ya estas en lo mas atras." << endl;
@@ -401,23 +404,27 @@ public:
 
   void redo(){
     try {
+      cout<<"Antes del primer if"<<endl;
       if(h_undo.top().first.compare("move_right") == 0){
-        move_right(h_undo.top().second);
-      }
-      else if(h_undo.top().first.compare("move_left") == 0){
         move_left(h_undo.top().second);
       }
-      else if(h_undo.top().first.compare("move_up") == 0){
-        move_up(h_undo.top().second);
+      else if(h_undo.top().first.compare("move_left") == 0){
+        move_right(h_undo.top().second);
       }
-      else if(h_undo.top().first.compare("move_down") == 0){
+      else if(h_undo.top().first.compare("move_up") == 0){
         move_down(h_undo.top().second);
       }
+      else if(h_undo.top().first.compare("move_down") == 0){
+        move_up(h_undo.top().second);
+      }
       else if(h_undo.top().first.compare("rotate") == 0){
-        rotate();
+        derotate();
       }
       else if(h_undo.top().first.compare("derotate") == 0){
-        derotate();
+        rotate();
+      }
+      else{
+        cout<<"Despúes de los if"<<endl;
       }
       h_undo.pop(); 
     }
@@ -475,10 +482,10 @@ public:
             move_down(h_queue.front().second);
           }
           else if(h_queue.front().first.compare("rotate") == 0){
-            rotate();
+            derotate();
           }
           else if(h_queue.front().first.compare("derotate") == 0){
-            derotate();
+            rotate();
           }
           h_queue.pop();
           sprintf(filename, "Imagen %d.png", i+1);
@@ -497,21 +504,25 @@ public:
       green_layer[i][j] = DEFAULT_G;
       blue_layer[i][j] = DEFAULT_B;
     }
+    for(int i=0; i < 322; i++)
+      for(int j=0; j < 256; j++) {
+        if(!s_R[i][j] && !s_G[i][j] && !s_B[i][j]) {
+          red_layer[INIT_Y+i][INIT_X+j] = DEFAULT_R;
+          green_layer[INIT_Y+i][INIT_X+j] = DEFAULT_G;
+          blue_layer[INIT_Y+i][INIT_X+j] = DEFAULT_B;
+        } else {
+          red_layer[INIT_Y+i][INIT_X+j] = s_R[i][j];
+          green_layer[INIT_Y+i][INIT_X+j] = s_G[i][j];
+          blue_layer[INIT_Y+i][INIT_X+j] = s_B[i][j];
+        }
+      }  
 
-  // Dibujamos el objeto en su posición inicial
-  for(int i=0; i < 322; i++)
-    for(int j=0; j < 256; j++) {
-      if(!s_R[i][j] && !s_G[i][j] && !s_B[i][j]) {
-        red_layer[INIT_Y+i][INIT_X+j] = DEFAULT_R;
-        green_layer[INIT_Y+i][INIT_X+j] = DEFAULT_G;
-        blue_layer[INIT_Y+i][INIT_X+j] = DEFAULT_B;
-      } else {
-        red_layer[INIT_Y+i][INIT_X+j] = s_R[i][j];
-        green_layer[INIT_Y+i][INIT_X+j] = s_G[i][j];
-        blue_layer[INIT_Y+i][INIT_X+j] = s_B[i][j];
-      }
-    }  
+  }
 
+  void vaciarStackUndo(){
+    while(!h_undo.empty()){
+      h_undo.pop()
+    }
   }
 
 
