@@ -12,7 +12,7 @@ int main() {
   moving_image im;
   
   
-    im.draw("imagen.png");
+    /*im.draw("imagen.png");
     im.rotate();
     Sleep(1000);
     im.draw("imagen.png");
@@ -30,7 +30,33 @@ int main() {
     im.draw("imagen.png");
     im.repeat_all();
     Sleep(1000);
-    im.draw("imagen.png");
+    im.draw("imagen.png");*/
+
+  im.draw("imagen.png");
+  im.move_left(200);
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.move_left(200);
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.undo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.undo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.redo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.rotate();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.redo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.repeat_all();
+
+
 
   /* NOTA 1: Si usan el mismo nombre para las imágenes, entonces cada llamada al
   método draw() sobreescribirá a la imagen */

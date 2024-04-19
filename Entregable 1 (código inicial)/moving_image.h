@@ -9,8 +9,6 @@
 #include <queue>
 #include <utility>
 
-using namespace std;
-
 // Clase que representa una imagen como una colección de 3 matrices siguiendo el
 // esquema de colores RGB
 
@@ -20,9 +18,11 @@ private:
   unsigned char **green_layer; // Capa de tonalidades verdes
   unsigned char **blue_layer; // Capa de tonalidades azules
 
-  stack<pair<string,int>> historial;
-  stack<pair<string,int>> h_undo;
-  queue<pair<string,int>> h_queue;
+  bool vaciarStackU = true;  
+  std::stack<std::pair<std::string,int>> historial;
+  std::stack<std::pair<std::string,int>> h_undo;
+  std::queue<std::pair<std::string,int>> h_queue;
+  std::stack<std::pair<std::string,int>> aux_stack;
 
 public:
   // Constructor de la imagen. Se crea una imagen por defecto. Estamos creando la matriz de 1000x1000
@@ -125,9 +125,9 @@ public:
       for(int j=0; j < W_IMG; j++)
         blue_layer[i][j] = tmp_layer[i][j];
 
-    historial.push(make_pair("move_right",d));
-    h_queue.push(make_pair("move_right",d));
-    stack<pair<string,int>>().swap(h_undo);
+    historial.push(std::make_pair("move_right",d));
+    h_queue.push(std::make_pair("move_right",d));
+    vaciarStackUndo();  
   }
 
   // Función que similar desplazar la imagen, de manera circular, d pixeles a la izquierda
@@ -174,8 +174,8 @@ public:
       for(int j=0; j < W_IMG; j++)
 	       blue_layer[i][j] = tmp_layer[i][j];
 
-    historial.push(make_pair("move_left",d));
-    h_queue.push(make_pair("move_left",d));
+    historial.push(std::make_pair("move_left",d));
+    h_queue.push(std::make_pair("move_left",d));
     vaciarStackUndo();
   }
 
@@ -225,9 +225,9 @@ public:
       for(int j=0; j < W_IMG; j++)
        blue_layer[i][j] = tmp_layer[i][j];
 
-    historial.push(make_pair("move_up",d));
-    h_queue.push(make_pair("move_up",d));
-    stack<pair<string,int>>().swap(h_undo);
+    historial.push(std::make_pair("move_up",d));
+    h_queue.push(std::make_pair("move_up",d));
+    vaciarStackUndo();
   }
 
   //FUNCIÓN IMPLEMENTADA: MOVE_DOWN(D)
@@ -276,9 +276,9 @@ public:
       for(int j=0; j < W_IMG; j++)
        blue_layer[i][j] = tmp_layer[i][j];
 
-    historial.push(make_pair("move_down",d));
-    h_queue.push(make_pair("move_down",d));
-    stack<pair<string,int>>().swap(h_undo);
+    historial.push(std::make_pair("move_down",d));
+    h_queue.push(std::make_pair("move_down",d));
+    vaciarStackUndo();
   }
 
   void rotate(){
@@ -322,9 +322,9 @@ public:
       }
     }
 
-    historial.push(make_pair("rotate",0));
-    h_queue.push(make_pair("rotate",0));
-    stack<pair<string,int>>().swap(h_undo);
+    historial.push(std::make_pair("rotate",0));
+    h_queue.push(std::make_pair("rotate",0));
+    vaciarStackUndo();
   }
 
   void derotate(){
@@ -366,13 +366,14 @@ public:
       }
     }
 
-    historial.push(make_pair("derotate",0));
-    h_queue.push(make_pair("derotate",0));
+    historial.push(std::make_pair("derotate",0));
+    h_queue.push(std::make_pair("derotate",0));
     vaciarStackUndo();
   }  
 
   void undo(){
     try {
+      vaciarStackU = false;
       if(historial.top().first.compare("move_right") == 0){
         move_left(historial.top().second);
       }
@@ -391,45 +392,53 @@ public:
       else if(historial.top().first.compare("derotate") == 0){
         rotate();
       }
-      h_undo.push(make_pair(historial.top().first, historial.top().second));
+      vaciarStackU = true;
+      h_undo.push(std::make_pair(historial.top().first, historial.top().second));
 
       //Sacamos el undo realizado  a b
       historial.pop();
       //Sacamos el mov orginal para poder seguir haciendo undos
       historial.pop();
     }catch(...) {
-      cout << "Intentaste usar undo(), pero ya estas en lo mas atras." << endl;
+      std::cout << "Intentaste usar undo(), pero ya estas en lo mas atras." << std::endl;
     }
   }
 
   void redo(){
     try {
-      cout<<"Antes del primer if"<<endl;
+      vaciarStackU = false;
       if(h_undo.top().first.compare("move_right") == 0){
         move_left(h_undo.top().second);
+        std::cout << "Se movio a la izquierda desde redo" << std::endl;
       }
       else if(h_undo.top().first.compare("move_left") == 0){
         move_right(h_undo.top().second);
+        std::cout << "Se movio a la derecha desde redo" << std::endl;
       }
       else if(h_undo.top().first.compare("move_up") == 0){
         move_down(h_undo.top().second);
+        std::cout << "Se movio hacia abajo desde redo" << std::endl;
       }
       else if(h_undo.top().first.compare("move_down") == 0){
         move_up(h_undo.top().second);
+        std::cout << "Se movio hacia arriba desde redo" << std::endl;
+
       }
       else if(h_undo.top().first.compare("rotate") == 0){
         derotate();
+        std::cout << "deroto desde redo" << std::endl;
+
       }
       else if(h_undo.top().first.compare("derotate") == 0){
         rotate();
+        std::cout << "roto desde redo" << std::endl;
+
       }
-      else{
-        cout<<"Despúes de los if"<<endl;
-      }
+      vaciarStackU = true;
       h_undo.pop(); 
     }
     catch(...) {
-      cout << "Intentaste hacer redo(), pero ya estas en lo mas adelante." << endl;
+      std::cout << "Intentaste hacer redo(), pero ya estas en lo mas adelante." << std::endl;
     }
   }
 
@@ -454,13 +463,12 @@ public:
         derotate();
       }
     } catch(...) {
-      cout << "Intentaste usar repeat(), pero no hay nada que repetir." << endl;
+      std::cout << "Intentaste usar repeat(), pero no hay nada que repetir." << std::endl;
     }
     
   }
 
   void repeat_all(){
-    try {
       if(h_queue.size()!=0){
         char filename[100];
         int size = h_queue.size();
@@ -492,9 +500,6 @@ public:
           draw(filename);
         }
       }
-    } catch(...) {
-      cout << "Intentaste usar repeat_all(), pero no hay nada que repetir." << endl;
-    }
   }
 
   void original_status(){
@@ -520,11 +525,12 @@ public:
   }
 
   void vaciarStackUndo(){
-    while(!h_undo.empty()){
-      h_undo.pop()
+    if(vaciarStackU){
+      while(!h_undo.empty()){
+        h_undo.pop();
+      }
     }
   }
-
 
 private:
   // Función privada que guarda la imagen en formato .png
