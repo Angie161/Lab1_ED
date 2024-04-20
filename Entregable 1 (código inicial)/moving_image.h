@@ -79,7 +79,6 @@ public:
     _draw(nb);
   }
 
-  //FUNCIÓN IMPLEMENTADA: MOVE_RIGHT(D)
   void move_right(int d){
     unsigned char tmp_layer[H_IMG][W_IMG];
 
@@ -130,7 +129,6 @@ public:
     vaciarStackUndo();  
   }
 
-  // Función que similar desplazar la imagen, de manera circular, d pixeles a la izquierda
   void move_left(int d) {
     unsigned char tmp_layer[H_IMG][W_IMG];
 
@@ -179,7 +177,6 @@ public:
     vaciarStackUndo();
   }
 
-  //FUNCIÓN IMPLEMENTADA: MOVE_UP(D)
   void move_up(int d){
     unsigned char tmp_layer[H_IMG][W_IMG];
 
@@ -230,7 +227,6 @@ public:
     vaciarStackUndo();
   }
 
-  //FUNCIÓN IMPLEMENTADA: MOVE_DOWN(D)
   void move_down(int d){
     unsigned char tmp_layer[H_IMG][W_IMG];
 
@@ -372,8 +368,11 @@ public:
   }  
 
   void undo(){
-    try {
-      vaciarStackU = false;
+    vaciarStackU = false;
+    if(historial.size()==0){
+      std::cout << "Intentaste usar undo(), pero no hay nada que deshacer." << std::endl;
+    }
+    else{
       if(historial.top().first.compare("move_right") == 0){
         move_left(historial.top().second);
       }
@@ -395,55 +394,47 @@ public:
       vaciarStackU = true;
       h_undo.push(std::make_pair(historial.top().first, historial.top().second));
 
-      //Sacamos el undo realizado  a b
+      //Sacamos el undo realizado
       historial.pop();
       //Sacamos el mov orginal para poder seguir haciendo undos
       historial.pop();
-    }catch(...) {
-      std::cout << "Intentaste usar undo(), pero ya estas en lo mas atras." << std::endl;
     }
   }
 
   void redo(){
-    try {
-      vaciarStackU = false;
+    vaciarStackU = false;
+    if(h_undo.size()==0){
+      std::cout << "Intentaste usar redo(), pero no hay nada que rehacer." << std::endl;
+    }
+    else{
       if(h_undo.top().first.compare("move_right") == 0){
         move_left(h_undo.top().second);
-        std::cout << "Se movio a la izquierda desde redo" << std::endl;
       }
       else if(h_undo.top().first.compare("move_left") == 0){
         move_right(h_undo.top().second);
-        std::cout << "Se movio a la derecha desde redo" << std::endl;
       }
       else if(h_undo.top().first.compare("move_up") == 0){
         move_down(h_undo.top().second);
-        std::cout << "Se movio hacia abajo desde redo" << std::endl;
       }
       else if(h_undo.top().first.compare("move_down") == 0){
         move_up(h_undo.top().second);
-        std::cout << "Se movio hacia arriba desde redo" << std::endl;
-
       }
       else if(h_undo.top().first.compare("rotate") == 0){
         derotate();
-        std::cout << "deroto desde redo" << std::endl;
-
       }
       else if(h_undo.top().first.compare("derotate") == 0){
         rotate();
-        std::cout << "roto desde redo" << std::endl;
-
       }
       vaciarStackU = true;
       h_undo.pop(); 
     }
-    catch(...) {
-      std::cout << "Intentaste hacer redo(), pero ya estas en lo mas adelante." << std::endl;
-    }
   }
 
   void repeat(){
-    try{
+    if(historial.size()==0){
+      std::cout << "Intentaste usar repeat(), pero no hay nada que repetir." << std::endl;
+    }
+    else{
       if(historial.top().first.compare("move_right") == 0){
         move_right(historial.top().second);
       }
@@ -462,44 +453,44 @@ public:
       else if(historial.top().first.compare("derotate") == 0){
         derotate();
       }
-    } catch(...) {
-      std::cout << "Intentaste usar repeat(), pero no hay nada que repetir." << std::endl;
     }
-    
   }
 
   void repeat_all(){
-      if(h_queue.size()!=0){
-        char filename[100];
-        int size = h_queue.size();
-        original_status();
-        draw("imagen 0.png");
+    if(h_queue.size()!=0){
+      char filename[100];
+      int size = h_queue.size();
+      original_status();
+      draw("imagen 0.png");
 
-        for(int i=0 ; i<size ; i++){
+      for(int i=0 ; i<size ; i++){
 
-          if(h_queue.front().first.compare("move_right") == 0){
-            move_right(h_queue.front().second);
-          }
-          else if(h_queue.front().first.compare("move_left") == 0){
-            move_left(h_queue.front().second);
-          }
-          else if(h_queue.front().first.compare("move_up") == 0){
-            move_up(h_queue.front().second);
-          }
-          else if(h_queue.front().first.compare("move_down") == 0){
-            move_down(h_queue.front().second);
-          }
-          else if(h_queue.front().first.compare("rotate") == 0){
-            rotate();
-          }
-          else if(h_queue.front().first.compare("derotate") == 0){
-            derotate();
-          }
-          h_queue.pop();
-          sprintf(filename, "Imagen %d.png", i+1);
-          draw(filename);
+        if(h_queue.front().first.compare("move_right") == 0){
+          move_right(h_queue.front().second);
         }
+        else if(h_queue.front().first.compare("move_left") == 0){
+          move_left(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_up") == 0){
+          move_up(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_down") == 0){
+          move_down(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("rotate") == 0){
+          rotate();
+        }
+        else if(h_queue.front().first.compare("derotate") == 0){
+          derotate();
+        }
+        h_queue.pop();
+        sprintf(filename, "Imagen %d.png", i+1);
+        draw(filename);
       }
+    }
+    else{
+      std::cout << "No hay movimientos en el historial." << std::endl;
+    }
   }
 
   void original_status(){
@@ -521,7 +512,6 @@ public:
           blue_layer[INIT_Y+i][INIT_X+j] = s_B[i][j];
         }
       }  
-
   }
 
   void vaciarStackUndo(){

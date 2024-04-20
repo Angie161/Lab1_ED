@@ -1,4 +1,6 @@
-/* Compilación: g++ -g -o img test.cpp
+/* Grupo formado por: Angie Ramírez y Walter Zárate
+ *
+ * Compilación: g++ -g -o img test.cpp
  * Ejecución: ./img
  *
  * Luego de la ejecución se generarán 3 imagines: imagen.png,
@@ -11,47 +13,48 @@
 int main() {
   moving_image im;
   
-    im.draw("imagen.png");
-    im.redo();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.undo();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.undo();
-    Sleep(1000);
-    im.draw("imagen.png");
+  //PRUEBA SUPERADA
+  im.draw("imagen.png");
+  im.redo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.undo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.undo();
+  Sleep(1000);
+  im.draw("imagen.png");
 
-    im.rotate();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.repeat();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.repeat_all();
-    Sleep(1000);
-    im.draw("imagen.png");
+  im.rotate();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.repeat();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.repeat_all();
+  Sleep(1000);
+  im.draw("imagen.png");
 
-    /* PRUEBA SUPERADA
-    im.draw("imagen.png");
-    im.rotate();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.move_left(300);
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.rotate();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.undo();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.redo();
-    Sleep(1000);
-    im.draw("imagen.png");
-    im.repeat_all();
-    Sleep(1000);
-    im.draw("imagen.png");*/
+  /* PRUEBA SUPERADA
+  im.draw("imagen.png");
+  im.rotate();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.move_left(300);
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.rotate();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.undo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.redo();
+  Sleep(1000);
+  im.draw("imagen.png");
+  im.repeat_all();
+  Sleep(1000);
+  im.draw("imagen.png");*/
 
   /* PRUEBA SUPERADA
   im.draw("imagen.png");
