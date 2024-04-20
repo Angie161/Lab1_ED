@@ -11,8 +11,29 @@
 int main() {
   moving_image im;
   
-  
-    /*im.draw("imagen.png");
+    im.draw("imagen.png");
+    im.redo();
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.undo();
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.undo();
+    Sleep(1000);
+    im.draw("imagen.png");
+
+    im.rotate();
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.repeat();
+    Sleep(1000);
+    im.draw("imagen.png");
+    im.repeat_all();
+    Sleep(1000);
+    im.draw("imagen.png");
+
+    /* PRUEBA SUPERADA
+    im.draw("imagen.png");
     im.rotate();
     Sleep(1000);
     im.draw("imagen.png");
@@ -32,6 +53,7 @@ int main() {
     Sleep(1000);
     im.draw("imagen.png");*/
 
+  /* PRUEBA SUPERADA
   im.draw("imagen.png");
   im.move_left(200);
   Sleep(1000);
@@ -51,10 +73,9 @@ int main() {
   im.rotate();
   Sleep(1000);
   im.draw("imagen.png");
-  im.redo();
-  Sleep(1000);
-  im.draw("imagen.png");
   im.repeat_all();
+  Sleep(1000);
+  im.draw("imagen.png");*/
 
 
 

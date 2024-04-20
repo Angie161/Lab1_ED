@@ -490,10 +490,10 @@ public:
             move_down(h_queue.front().second);
           }
           else if(h_queue.front().first.compare("rotate") == 0){
-            derotate();
+            rotate();
           }
           else if(h_queue.front().first.compare("derotate") == 0){
-            rotate();
+            derotate();
           }
           h_queue.pop();
           sprintf(filename, "Imagen %d.png", i+1);
