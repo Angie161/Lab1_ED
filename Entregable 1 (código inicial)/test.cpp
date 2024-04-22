@@ -1,86 +1,29 @@
 /* Grupo formado por: Angie Ramírez y Walter Zárate
  *
- * Compilación: g++ -g -o img test.cpp
- * Ejecución: ./img
- *
- * Luego de la ejecución se generarán 3 imagines: imagen.png,
- * imagen_desplazada_500.png e imagen_desplazada_600.png
+ * Compilación: g++ -o ejecutable test.cpp
+ * Ejecución: ./ejecutable
  */
 
 #include "moving_image.h"
-#include<windows.h> // para sleep (linux). Usar  #include<windows.h> para Windows
+#include<unistd.h> // Para utilizar sleep(). Usar unistd.h para Linux y windows.h para Windows
 
 int main() {
   moving_image im;
-  
-  //PRUEBA SUPERADA
-  im.draw("imagen.png");
-  im.redo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.undo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.undo();
-  Sleep(1000);
-  im.draw("imagen.png");
 
+  /* 
+  im.move_right(00);
+  im.move_left(00);
+  im.move_up(00);
+  im.move_down(00);
   im.rotate();
-  Sleep(1000);
-  im.draw("imagen.png");
+
+  im.undo();
+  im.redo();
   im.repeat();
-  Sleep(1000);
-  im.draw("imagen.png");
+  */
+
+
   im.repeat_all();
-  Sleep(1000);
-  im.draw("imagen.png");
-
-  /* PRUEBA SUPERADA
-  im.draw("imagen.png");
-  im.rotate();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.move_left(300);
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.rotate();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.undo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.redo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.repeat_all();
-  Sleep(1000);
-  im.draw("imagen.png");*/
-
-  /* PRUEBA SUPERADA
-  im.draw("imagen.png");
-  im.move_left(200);
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.move_left(200);
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.undo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.undo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.redo();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.rotate();
-  Sleep(1000);
-  im.draw("imagen.png");
-  im.repeat_all();
-  Sleep(1000);
-  im.draw("imagen.png");*/
-
-
 
   /* NOTA 1: Si usan el mismo nombre para las imágenes, entonces cada llamada al
   método draw() sobreescribirá a la imagen */
