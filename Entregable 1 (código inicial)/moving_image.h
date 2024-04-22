@@ -323,6 +323,165 @@ public:
     vaciarStackUndo();
   }
 
+  
+
+  void undo(){
+    vaciarStackU = false;
+    if(historial.size()==0){
+      std::cout << "Intentaste usar undo(), pero no hay nada que deshacer." << std::endl;
+    }
+    else{
+      if(historial.top().first.compare("move_right") == 0){
+        move_left(historial.top().second);
+
+        h_undo.push(std::make_pair(historial.top().first, historial.top().second));
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+      }
+      else if(historial.top().first.compare("move_left") == 0){
+        move_right(historial.top().second);
+
+        h_undo.push(std::make_pair(historial.top().first, historial.top().second));
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+      }
+      else if(historial.top().first.compare("move_up") == 0){
+        move_down(historial.top().second);
+
+        h_undo.push(std::make_pair(historial.top().first, historial.top().second));
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+      }
+      else if(historial.top().first.compare("move_down") == 0){
+        move_up(historial.top().second);
+
+        h_undo.push(std::make_pair(historial.top().first, historial.top().second));
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+      }
+      else if(historial.top().first.compare("rotate") == 0){
+        derotate();
+
+        h_undo.push(std::make_pair("derotate", 0));
+        historial.pop();
+        eliminarUltimoElementoEnh_queue();
+      }
+      vaciarStackU = true;
+    }
+  }
+
+  void redo(){
+    vaciarStackU = false;
+    if(h_undo.size()==0){
+      std::cout << "Intentaste usar redo(), pero no hay nada que rehacer." << std::endl;
+    }
+    else{
+      if(h_undo.top().first.compare("move_right") == 0){
+        move_left(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("move_left") == 0){
+        move_right(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("move_up") == 0){
+        move_down(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("move_down") == 0){
+        move_up(h_undo.top().second);
+      }
+      else if(h_undo.top().first.compare("derotate") == 0){
+        rotate();
+      }
+      vaciarStackU = true;
+      h_undo.pop(); 
+    }
+  }
+
+  void repeat(){
+    if(historial.size()==0){
+      std::cout << "Intentaste usar repeat(), pero no hay nada que repetir." << std::endl;
+    }
+    else{
+      if(historial.top().first.compare("move_right") == 0){
+        move_right(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_left") == 0){
+        move_left(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_up") == 0){
+        move_up(historial.top().second);
+      }
+      else if(historial.top().first.compare("move_down") == 0){
+        move_down(historial.top().second);
+      }
+      else if(historial.top().first.compare("rotate") == 0){
+        rotate();
+      }
+    }
+  }
+
+  void repeat_all(){
+    if(h_queue.size()!=0){
+      char filename[100];
+      int size = h_queue.size();
+      original_status();
+      draw("imagen 0.png");
+
+      for(int i=0 ; i<size ; i++){
+
+        if(h_queue.front().first.compare("move_right") == 0){
+          move_right(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_left") == 0){
+          move_left(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_up") == 0){
+          move_up(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("move_down") == 0){
+          move_down(h_queue.front().second);
+        }
+        else if(h_queue.front().first.compare("rotate") == 0){
+          rotate();
+        }
+        h_queue.pop();
+        sprintf(filename, "Imagen %d.png", i+1);
+        draw(filename);
+      }
+    }
+    else{
+      std::cout << "No hay movimientos en el historial." << std::endl;
+    }
+  }
+
+private:
+  // Función privada que guarda la imagen en formato .png
+  void _draw(const char* nb) {
+    unsigned char *rgb = new unsigned char[H_IMG * W_IMG * 3], *p = rgb;
+    unsigned x, y;
+
+    // La imagen resultante tendrá el nombre dado por la variable 'nb'
+    FILE *fp = fopen(nb, "wb");
+
+    // Transformamos las 3 matrices en una arreglo unidimensional
+    for (y = 0; y < H_IMG; y++)
+        for (x = 0; x < W_IMG; x++) {
+            *p++ = red_layer[y][x];    /* R */
+            *p++ = green_layer[y][x];    /* G */
+            *p++ = blue_layer[y][x];    /* B */
+        }
+    // La función svpng() transforma las 3 matrices RGB en una imagen PNG 
+    svpng(fp, W_IMG, H_IMG, rgb, 0);
+    fclose(fp);
+  }
+
   void derotate(){
     unsigned char tmp_layer[H_IMG][W_IMG];
     //Rotar capa roja
@@ -361,137 +520,7 @@ public:
         blue_layer[i][j] = tmp_layer[i][j];
       }
     }
-
-    historial.push(std::make_pair("derotate",0));
-    h_queue.push(std::make_pair("derotate",0));
-    vaciarStackUndo();
   }  
-
-  void undo(){
-    vaciarStackU = false;
-    if(historial.size()==0){
-      std::cout << "Intentaste usar undo(), pero no hay nada que deshacer." << std::endl;
-    }
-    else{
-      if(historial.top().first.compare("move_right") == 0){
-        move_left(historial.top().second);
-      }
-      else if(historial.top().first.compare("move_left") == 0){
-        move_right(historial.top().second);
-      }
-      else if(historial.top().first.compare("move_up") == 0){
-        move_down(historial.top().second);
-      }
-      else if(historial.top().first.compare("move_down") == 0){
-        move_up(historial.top().second);
-      }
-      else if(historial.top().first.compare("rotate") == 0){
-        derotate();
-      }
-      else if(historial.top().first.compare("derotate") == 0){
-        rotate();
-      }
-      vaciarStackU = true;
-      h_undo.push(std::make_pair(historial.top().first, historial.top().second));
-
-      //Sacamos el undo realizado
-      historial.pop();
-      //Sacamos el mov orginal para poder seguir haciendo undos
-      historial.pop();
-    }
-  }
-
-  void redo(){
-    vaciarStackU = false;
-    if(h_undo.size()==0){
-      std::cout << "Intentaste usar redo(), pero no hay nada que rehacer." << std::endl;
-    }
-    else{
-      if(h_undo.top().first.compare("move_right") == 0){
-        move_left(h_undo.top().second);
-      }
-      else if(h_undo.top().first.compare("move_left") == 0){
-        move_right(h_undo.top().second);
-      }
-      else if(h_undo.top().first.compare("move_up") == 0){
-        move_down(h_undo.top().second);
-      }
-      else if(h_undo.top().first.compare("move_down") == 0){
-        move_up(h_undo.top().second);
-      }
-      else if(h_undo.top().first.compare("rotate") == 0){
-        derotate();
-      }
-      else if(h_undo.top().first.compare("derotate") == 0){
-        rotate();
-      }
-      vaciarStackU = true;
-      h_undo.pop(); 
-    }
-  }
-
-  void repeat(){
-    if(historial.size()==0){
-      std::cout << "Intentaste usar repeat(), pero no hay nada que repetir." << std::endl;
-    }
-    else{
-      if(historial.top().first.compare("move_right") == 0){
-        move_right(historial.top().second);
-      }
-      else if(historial.top().first.compare("move_left") == 0){
-        move_left(historial.top().second);
-      }
-      else if(historial.top().first.compare("move_up") == 0){
-        move_up(historial.top().second);
-      }
-      else if(historial.top().first.compare("move_down") == 0){
-        move_down(historial.top().second);
-      }
-      else if(historial.top().first.compare("rotate") == 0){
-        rotate();
-      }
-      else if(historial.top().first.compare("derotate") == 0){
-        derotate();
-      }
-    }
-  }
-
-  void repeat_all(){
-    if(h_queue.size()!=0){
-      char filename[100];
-      int size = h_queue.size();
-      original_status();
-      draw("imagen 0.png");
-
-      for(int i=0 ; i<size ; i++){
-
-        if(h_queue.front().first.compare("move_right") == 0){
-          move_right(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("move_left") == 0){
-          move_left(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("move_up") == 0){
-          move_up(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("move_down") == 0){
-          move_down(h_queue.front().second);
-        }
-        else if(h_queue.front().first.compare("rotate") == 0){
-          rotate();
-        }
-        else if(h_queue.front().first.compare("derotate") == 0){
-          derotate();
-        }
-        h_queue.pop();
-        sprintf(filename, "Imagen %d.png", i+1);
-        draw(filename);
-      }
-    }
-    else{
-      std::cout << "No hay movimientos en el historial." << std::endl;
-    }
-  }
 
   void original_status(){
     for(int i=0; i < H_IMG; i++)
@@ -514,6 +543,17 @@ public:
       }  
   }
 
+  void eliminarUltimoElementoEnh_queue() {
+    int aux_size = h_queue.size() - 1;
+    std::pair<std::string,int> aux_pair;
+    for(int i = 0; i < aux_size; i++) {
+      aux_pair = h_queue.front();
+      h_queue.pop();
+      h_queue.push(aux_pair);
+    }
+    h_queue.pop();
+  }
+
   void vaciarStackUndo(){
     if(vaciarStackU){
       while(!h_undo.empty()){
@@ -521,27 +561,6 @@ public:
       }
     }
   }
-
-private:
-  // Función privada que guarda la imagen en formato .png
-  void _draw(const char* nb) {
-    unsigned char *rgb = new unsigned char[H_IMG * W_IMG * 3], *p = rgb;
-    unsigned x, y;
-
-    // La imagen resultante tendrá el nombre dado por la variable 'nb'
-    FILE *fp = fopen(nb, "wb");
-
-    // Transformamos las 3 matrices en una arreglo unidimensional
-    for (y = 0; y < H_IMG; y++)
-        for (x = 0; x < W_IMG; x++) {
-            *p++ = red_layer[y][x];    /* R */
-            *p++ = green_layer[y][x];    /* G */
-            *p++ = blue_layer[y][x];    /* B */
-        }
-    // La función svpng() transforma las 3 matrices RGB en una imagen PNG 
-    svpng(fp, W_IMG, H_IMG, rgb, 0);
-    fclose(fp);
-}
 
   
 };
