@@ -19,10 +19,11 @@ private:
   unsigned char **blue_layer; // Capa de tonalidades azules
 
   bool vaciarStackU = true;  
+
+  std::stack<std::pair<std::string,int>> aux_stack;
   std::stack<std::pair<std::string,int>> historial;
   std::stack<std::pair<std::string,int>> h_undo;
   std::queue<std::pair<std::string,int>> h_queue;
-  std::stack<std::pair<std::string,int>> aux_stack;
 
 public:
   // Constructor de la imagen. Se crea una imagen por defecto. Estamos creando la matriz de 1000x1000
@@ -336,43 +337,34 @@ public:
 
         h_undo.push(std::make_pair(historial.top().first, historial.top().second));
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
       }
       else if(historial.top().first.compare("move_left") == 0){
         move_right(historial.top().second);
 
         h_undo.push(std::make_pair(historial.top().first, historial.top().second));
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
       }
       else if(historial.top().first.compare("move_up") == 0){
         move_down(historial.top().second);
 
         h_undo.push(std::make_pair(historial.top().first, historial.top().second));
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
       }
       else if(historial.top().first.compare("move_down") == 0){
         move_up(historial.top().second);
 
         h_undo.push(std::make_pair(historial.top().first, historial.top().second));
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
       }
       else if(historial.top().first.compare("rotate") == 0){
         derotate();
 
         h_undo.push(std::make_pair("derotate", 0));
         historial.pop();
-        eliminarUltimoElementoEnh_queue();
       }
       vaciarStackU = true;
     }
@@ -450,6 +442,9 @@ public:
         }
         else if(h_queue.front().first.compare("rotate") == 0){
           rotate();
+        } 
+        else if(h_queue.front().first.compare("derotate") == 0){
+          derotate();
         }
         h_queue.pop();
         sprintf(filename, "Imagen %d.png", i+1);
@@ -520,6 +515,8 @@ private:
         blue_layer[i][j] = tmp_layer[i][j];
       }
     }
+
+    h_queue.push(std::make_pair("derotate",0));
   }  
 
   void original_status(){
@@ -541,17 +538,6 @@ private:
           blue_layer[INIT_Y+i][INIT_X+j] = s_B[i][j];
         }
       }  
-  }
-
-  void eliminarUltimoElementoEnh_queue() {
-    int aux_size = h_queue.size() - 1;
-    std::pair<std::string,int> aux_pair;
-    for(int i = 0; i < aux_size; i++) {
-      aux_pair = h_queue.front();
-      h_queue.pop();
-      h_queue.push(aux_pair);
-    }
-    h_queue.pop();
   }
 
   void vaciarStackUndo(){
