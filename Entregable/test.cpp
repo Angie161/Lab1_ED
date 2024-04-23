@@ -5,7 +5,7 @@
  */
 
 #include "moving_image.h"
-#include<unistd.h> // Para utilizar sleep(). Usar unistd.h para Linux y windows.h para Windows
+#include <windows.h> // Para utilizar sleep(). Usar unistd.h para Linux y windows.h para Windows
 
 int main() {
   moving_image im;
@@ -21,7 +21,6 @@ int main() {
   im.redo();
   im.repeat();
   */
-
 
   im.repeat_all();
 
